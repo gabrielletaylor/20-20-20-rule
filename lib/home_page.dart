@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Timer? countdownTimer;
-  Duration duration = Duration(days: 5);
+  Duration duration = Duration(minutes: 20);
   final reduceSecondsBy = 1;
   double percent = 0;
   static int timeInMinute = 20;
@@ -38,7 +38,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void startTimer() {
-    timeInMinute = 20;
     secPercentage = (timeInSec / 100);
     setState(() => startOrPause = "Pause Timer");
     countdownTimer = Timer.periodic(Duration(seconds: 1), (_) => setCountdown());
@@ -56,20 +55,21 @@ class _HomePageState extends State<HomePage> {
     percent = 0;
     timeInMinute = 20;
     timeInSec = timeInMinute * 60;
-    setState(() => duration = Duration(days: 5));
+    setState(() => duration = Duration(minutes: 20));
   }
 
   void setCountdown() {
     setState(() {
-      final seconds = duration.inSeconds - reduceSecondsBy;
-      if (seconds < 0) {
+      final sec = duration.inSeconds - reduceSecondsBy;
+
+      if (sec < 0) {
         percent = 0;
         timeInMinute = 20;
         timeInSec = timeInMinute * 60;
         countdownTimer!.cancel();
       }
       else {
-        duration = Duration(seconds: seconds);
+        duration = Duration(seconds: sec);
         timeInSec--;
         if (timeInSec % 60 == 0) {
           timeInMinute--;
@@ -89,9 +89,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     String strDigits(int n) => n.toString().padLeft(2, '0');
-    final days = strDigits(duration.inDays);
-    final minutes = strDigits(duration.inMinutes.remainder(20));
-    final seconds = strDigits(duration.inSeconds.remainder(60));
+    String minutes = strDigits(duration.inMinutes.remainder(20));
+    String seconds = strDigits(duration.inSeconds.remainder(60));
+    if (minutes == "00") {
+      minutes = "20";
+    }
 
     return SafeArea(
       child: Scaffold(
