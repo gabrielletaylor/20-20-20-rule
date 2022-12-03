@@ -18,25 +18,37 @@ class _HomePageState extends State<HomePage> {
   static int timeInMinute = 20;
   int timeInSec = timeInMinute * 60;
   double secPercentage = 0;
-  bool startPressed = false;
+  String startOrPause = "Start Timer";
+  int timesPressed = 0;
 
   @override
   void initState() {
     super.initState();
   }
 
+  void getTimerOption() {
+    // pause timer
+    if (timesPressed % 2 == 0) {
+        pauseTimer();
+    }
+    // start timer
+    else {
+      startTimer();
+    }
+  }
+
   void startTimer() {
-    // if (!countdownTimer!.isActive) {
-    startPressed = true;
     timeInMinute = 20;
     secPercentage = (timeInSec / 100);
+    setState(() => startOrPause = "Pause Timer");
     countdownTimer = Timer.periodic(Duration(seconds: 1), (_) => setCountdown());
-    // }
   }
 
   void pauseTimer() {
-    setState(() => countdownTimer!.cancel());
-    startPressed = false;
+    setState(() {
+      startOrPause = "Start Timer";
+      countdownTimer!.cancel();
+    });
   }
 
   void resetTimer() {
@@ -205,48 +217,18 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 40.0),
                                 child: ElevatedButton(
-                                  child: const Padding(
+                                  child: Padding(
                                     padding: EdgeInsets.all(20.0),
                                     child: Text(
-                                      'Start Timer',
+                                      '$startOrPause',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
                                     ),
                                   ),
                                   onPressed: () {
-                                    if (!startPressed) {
-                                      startTimer();
-                                    }
-                                    // startTimer();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    elevation: 4,
-                                    primary: Colors.blue.shade700,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 40.0),
-                                child: ElevatedButton(
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(20.0),
-                                    child: Text(
-                                      'Pause Timer',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    if (countdownTimer == null || countdownTimer!.isActive) {
-                                      pauseTimer();
-                                    }
+                                    timesPressed++;
+                                    getTimerOption();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     elevation: 4,
