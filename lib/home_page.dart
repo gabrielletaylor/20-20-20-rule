@@ -12,15 +12,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Timer? countdownTimer;
-  Duration duration = Duration(minutes: 5);
+  Duration duration = Duration(minutes: 1);
   final reduceSecondsBy = 1;
   double percent = 0;
-  static int timeInMinute = 5;
+  static int timeInMinute = 1;
   int timeInSec = timeInMinute * 60;
   double secPercentage = 0;
   String startOrPause = "Start Timer";
   int timesPressed = 0;
-  bool timerAlmostDone = false;
+  bool timerAlmostDone = false, timerDone = false;
+  int timeRemaining = 20;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void startTimer() {
+    timerDone = false;
     secPercentage = (timeInSec / 100);
     setState(() => startOrPause = "Pause Timer");
     countdownTimer = Timer.periodic(Duration(seconds: 1), (_) => setCountdown());
@@ -54,10 +56,11 @@ class _HomePageState extends State<HomePage> {
   void resetTimer() {
     pauseTimer();
     timerAlmostDone = false;
+    timesPressed = 0;
     percent = 0;
-    timeInMinute = 5;
+    timeInMinute = 1;
     timeInSec = timeInMinute * 60;
-    setState(() => duration = Duration(minutes: 5));
+    setState(() => duration = Duration(minutes: 1));
   }
 
   void setCountdown() {
@@ -65,14 +68,12 @@ class _HomePageState extends State<HomePage> {
       final sec = duration.inSeconds - reduceSecondsBy;
 
       if (sec < 0) {
-        percent = 0;
-        timeInMinute = 5;
-        timeInSec = timeInMinute * 60;
-        timesPressed = 0;
-        countdownTimer!.cancel();
-        // add implementation of popup here
+        timerDone = true;
         setState(() {
+          resetTimer();
+          _showMyDialog();
           startOrPause = "Start Timer";
+          duration = Duration(minutes: 1);
         });
       }
       else {
@@ -98,13 +99,41 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('20 minutes are up!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Look at something 20 feet away for 20 seconds.'),
+                Text('\nTime remaining: $timeRemaining'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String strDigits(int n) => n.toString().padLeft(2, '0');
-    String minutes = strDigits(duration.inMinutes.remainder(5));
+    String minutes = strDigits(duration.inMinutes.remainder(1));
     String seconds = strDigits(duration.inSeconds.remainder(60));
-    if (minutes == "00" && !timerAlmostDone) {
-      minutes = "05";
+    if (minutes == "00" && (!timerAlmostDone || timerDone)) {
+      minutes = "01";
     }
 
     return SafeArea(
