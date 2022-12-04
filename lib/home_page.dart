@@ -12,14 +12,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Timer? countdownTimer;
-  Duration duration = Duration(minutes: 20);
+  Duration duration = Duration(minutes: 5);
   final reduceSecondsBy = 1;
   double percent = 0;
-  static int timeInMinute = 20;
+  static int timeInMinute = 5;
   int timeInSec = timeInMinute * 60;
   double secPercentage = 0;
   String startOrPause = "Start Timer";
   int timesPressed = 0;
+  bool timerAlmostDone = false;
 
   @override
   void initState() {
@@ -52,10 +53,11 @@ class _HomePageState extends State<HomePage> {
 
   void resetTimer() {
     pauseTimer();
+    timerAlmostDone = false;
     percent = 0;
-    timeInMinute = 20;
+    timeInMinute = 5;
     timeInSec = timeInMinute * 60;
-    setState(() => duration = Duration(minutes: 20));
+    setState(() => duration = Duration(minutes: 5));
   }
 
   void setCountdown() {
@@ -64,9 +66,14 @@ class _HomePageState extends State<HomePage> {
 
       if (sec < 0) {
         percent = 0;
-        timeInMinute = 20;
+        timeInMinute = 5;
         timeInSec = timeInMinute * 60;
+        timesPressed = 0;
         countdownTimer!.cancel();
+        // add implementation of popup here
+        setState(() {
+          startOrPause = "Start Timer";
+        });
       }
       else {
         duration = Duration(seconds: sec);
@@ -74,10 +81,15 @@ class _HomePageState extends State<HomePage> {
         if (timeInSec % 60 == 0) {
           timeInMinute--;
         }
+        if (timeInSec / 60 <= 1) {
+          timerAlmostDone = true;
+        }
 
         if (timeInSec % secPercentage == 0) {
           if (percent < 1) {
-            percent += 0.01;
+            if (percent + 0.01 < 1) {
+              percent += 0.01;
+            }
           } else {
             percent = 1;
           }
@@ -89,10 +101,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     String strDigits(int n) => n.toString().padLeft(2, '0');
-    String minutes = strDigits(duration.inMinutes.remainder(20));
+    String minutes = strDigits(duration.inMinutes.remainder(5));
     String seconds = strDigits(duration.inSeconds.remainder(60));
-    if (minutes == "00") {
-      minutes = "20";
+    if (minutes == "00" && !timerAlmostDone) {
+      minutes = "05";
     }
 
     return SafeArea(
