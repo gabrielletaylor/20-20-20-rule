@@ -104,6 +104,36 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "plugin_platform_interface",
+      "rootUri": "file:///Users/gabrielletaylor/Documents/Spring%2022/CS%204750/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "push",
+      "rootUri": "file:///Users/gabrielletaylor/Documents/Spring%2022/CS%204750/flutter/.pub-cache/hosted/pub.dartlang.org/push-0.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "push_android",
+      "rootUri": "file:///Users/gabrielletaylor/Documents/Spring%2022/CS%204750/flutter/.pub-cache/hosted/pub.dartlang.org/push_android-0.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "push_ios",
+      "rootUri": "file:///Users/gabrielletaylor/Documents/Spring%2022/CS%204750/flutter/.pub-cache/hosted/pub.dartlang.org/push_ios-0.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "push_platform_interface",
+      "rootUri": "file:///Users/gabrielletaylor/Documents/Spring%2022/CS%204750/flutter/.pub-cache/hosted/pub.dartlang.org/push_platform_interface-0.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///Users/gabrielletaylor/Documents/Spring%2022/CS%204750/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -164,7 +194,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-12-03T06:55:43.734515Z",
+  "generated": "2022-12-04T06:21:39.944455Z",
   "generator": "pub",
   "generatorVersion": "2.16.1"
 }

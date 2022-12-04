@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:push/push.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,31 +22,23 @@ class _HomePageState extends State<HomePage> {
   String startOrPause = "Start Timer";
   int timesPressed = 0;
   bool timerAlmostDone = false, timerDone = false, twentySecTimerDone = false;
-  StreamController<int> _events = new StreamController<int>();
-  int _counter = 21;
+  StreamController<int> _events = StreamController<int>();
 
   @override
   void initState() {
     super.initState();
-    // _events = new StreamController<int>();
+    _events = StreamController<int>();
     _events.add(20);
   }
 
   void start20SecTimer() {
+    int _counter = 21;
+    _events = StreamController<int>();
+    _events.add(20);
     if (_timer != null) {
       _timer!.cancel();
     }
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      // setState(() {
-      //   if (_counter > 0) {
-      //     _counter--;
-      //   }
-      //   else {
-      //     _timer!.cancel();
-      //     twentySecTimerDone = true;
-      //   }
-      //   _events.add(_counter);
-      // });
       if (_counter > 0) {
         _counter--;
       }
@@ -54,7 +47,6 @@ class _HomePageState extends State<HomePage> {
         twentySecTimerDone = true;
       }
       _events.add(_counter);
-      // setState(() {});
     });
   }
 
