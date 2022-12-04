@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:push/push.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,71 +12,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Timer? countdownTimer, _timer;
+  Timer? twentyMinTimer, twentySecTimer;
   Duration duration = Duration(minutes: 1);
   final reduceSecondsBy = 1;
-  double percent = 0;
+  double percent = 0, secPercentage = 0;
   static int timeInMinute = 1;
   int timeInSec = timeInMinute * 60;
-  double secPercentage = 0;
   String startOrPause = "Start Timer";
   int timesPressed = 0;
-  bool timerAlmostDone = false, timerDone = false, twentySecTimerDone = false;
-  StreamController<int> _events = StreamController<int>();
+  bool timerAlmostDone = false, twentyMinTimerDone = false, twentySecTimerDone = false;
+  StreamController<int> streamEvents = StreamController<int>();
 
   @override
   void initState() {
     super.initState();
-    _events = StreamController<int>();
-    _events.add(20);
-  }
-
-  void start20SecTimer() {
-    int _counter = 21;
-    _events = StreamController<int>();
-    _events.add(20);
-    if (_timer != null) {
-      _timer!.cancel();
-    }
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_counter > 0) {
-        _counter--;
-      }
-      else {
-        _timer!.cancel();
-        twentySecTimerDone = true;
-      }
-      _events.add(_counter);
-    });
+    streamEvents = StreamController<int>();
+    streamEvents.add(20);
   }
 
   void getTimerOption() {
     // pause timer
     if (timesPressed % 2 == 0) {
-        pauseTimer();
+        pause20MinTimer();
     }
     // start timer
     else {
-      startTimer();
+      start20MinTimer();
     }
   }
 
-  void startTimer() {
-    timerDone = false;
+  void start20MinTimer() {
+    twentyMinTimerDone = false;
     secPercentage = (timeInSec / 100);
     setState(() => startOrPause = "Pause Timer");
-    countdownTimer = Timer.periodic(Duration(seconds: 1), (_) => setCountdown());
+    twentyMinTimer = Timer.periodic(Duration(seconds: 1), (_) => setCountdown());
   }
 
-  void pauseTimer() {
+  void pause20MinTimer() {
     setState(() {
       startOrPause = "Start Timer";
-      countdownTimer!.cancel();
+      twentyMinTimer!.cancel();
     });
   }
 
-  void resetTimer() {
-    pauseTimer();
+  void reset20MinTimer() {
+    pause20MinTimer();
     timerAlmostDone = false;
     timesPressed = 0;
     percent = 0;
@@ -88,13 +68,12 @@ class _HomePageState extends State<HomePage> {
   void setCountdown() {
     setState(() {
       final sec = duration.inSeconds - reduceSecondsBy;
-
       if (sec < 0) {
-        timerDone = true;
+        twentyMinTimerDone = true;
+        FlutterRingtonePlayer.playNotification();
         setState(() {
-          resetTimer();
-          start20SecTimer();
-          _showMyDialog();
+          reset20MinTimer();
+          readyMessage();
           startOrPause = "Start Timer";
           duration = Duration(minutes: 1);
         });
@@ -108,7 +87,6 @@ class _HomePageState extends State<HomePage> {
         if (timeInSec / 60 <= 1) {
           timerAlmostDone = true;
         }
-
         if (timeInSec % secPercentage == 0) {
           if (percent < 1) {
             if (percent + 0.01 < 1) {
@@ -122,20 +100,68 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> _showMyDialog() async {
+  void start20SecTimer() {
+    int _counter = 21;
+    streamEvents = StreamController<int>();
+    streamEvents.add(20);
+    if (twentySecTimer != null) {
+      twentySecTimer!.cancel();
+    }
+    twentySecTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_counter > 0) {
+        _counter--;
+      }
+      else {
+        FlutterRingtonePlayer.playNotification();
+        twentySecTimer!.cancel();
+        twentySecTimerDone = true;
+      }
+      streamEvents.add(_counter);
+    });
+  }
+
+  Future<void> readyMessage() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('20 minutes are up!'),
+          content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      Text('Time to rest for 20 seconds.'),
+                    ],
+              ),
+            ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ready'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                start20SecTimer();
+                popUpMessage();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> popUpMessage() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Look at something 20 feet away for 20 seconds.'),
           content: StreamBuilder<int>(
-            stream: _events.stream,
+            stream: streamEvents.stream,
             builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
               return SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    Text('Look at something 20 feet away for 20 seconds.'),
                     Text('\nTime remaining: ${snapshot.data.toString()}'),
                   ],
                 )
@@ -162,7 +188,7 @@ class _HomePageState extends State<HomePage> {
     String strDigits(int n) => n.toString().padLeft(2, '0');
     String minutes = strDigits(duration.inMinutes.remainder(1));
     String seconds = strDigits(duration.inSeconds.remainder(60));
-    if (minutes == "00" && (!timerAlmostDone || timerDone)) {
+    if (minutes == "00" && (!timerAlmostDone || twentyMinTimerDone)) {
       minutes = "01";
     }
 
@@ -327,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    resetTimer();
+                                    reset20MinTimer();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     elevation: 4,

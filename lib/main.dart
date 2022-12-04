@@ -1,6 +1,5 @@
 import 'package:cs4080_capstone_project/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:push/push.dart';
 
 void main() {
   runApp(const MyApp());
