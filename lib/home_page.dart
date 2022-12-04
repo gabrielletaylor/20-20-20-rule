@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Timer? countdownTimer;
+  Timer? countdownTimer, _timer;
   Duration duration = Duration(minutes: 1);
   final reduceSecondsBy = 1;
   double percent = 0;
@@ -20,12 +20,42 @@ class _HomePageState extends State<HomePage> {
   double secPercentage = 0;
   String startOrPause = "Start Timer";
   int timesPressed = 0;
-  bool timerAlmostDone = false, timerDone = false;
-  int timeRemaining = 20;
+  bool timerAlmostDone = false, timerDone = false, twentySecTimerDone = false;
+  StreamController<int> _events = new StreamController<int>();
+  int _counter = 21;
 
   @override
   void initState() {
     super.initState();
+    // _events = new StreamController<int>();
+    _events.add(20);
+  }
+
+  void start20SecTimer() {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      // setState(() {
+      //   if (_counter > 0) {
+      //     _counter--;
+      //   }
+      //   else {
+      //     _timer!.cancel();
+      //     twentySecTimerDone = true;
+      //   }
+      //   _events.add(_counter);
+      // });
+      if (_counter > 0) {
+        _counter--;
+      }
+      else {
+        _timer!.cancel();
+        twentySecTimerDone = true;
+      }
+      _events.add(_counter);
+      // setState(() {});
+    });
   }
 
   void getTimerOption() {
@@ -71,6 +101,7 @@ class _HomePageState extends State<HomePage> {
         timerDone = true;
         setState(() {
           resetTimer();
+          start20SecTimer();
           _showMyDialog();
           startOrPause = "Start Timer";
           duration = Duration(minutes: 1);
@@ -106,19 +137,26 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('20 minutes are up!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Look at something 20 feet away for 20 seconds.'),
-                Text('\nTime remaining: $timeRemaining'),
-              ],
-            ),
+          content: StreamBuilder<int>(
+            stream: _events.stream,
+            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+              return SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    Text('Look at something 20 feet away for 20 seconds.'),
+                    Text('\nTime remaining: ${snapshot.data.toString()}'),
+                  ],
+                )
+              );
+            },
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Done'),
               onPressed: () {
-                Navigator.of(context).pop();
+                if (twentySecTimerDone) {
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ],
