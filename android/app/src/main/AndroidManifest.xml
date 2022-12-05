@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.cs4080_capstone_project">
+    package="com.example.twenty_20_20_rule">
    <application
-        android:label="cs4080_capstone_project"
+        android:label="twenty_20_20_rule"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

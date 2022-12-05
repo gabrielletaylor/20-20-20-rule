@@ -1,4 +1,4 @@
-import 'package:cs4080_capstone_project/home_page.dart';
+import 'package:twenty_20_20_rule/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '20-20-20 Rule App',
+      title: '20-20-20 Rule',
       theme: ThemeData(
         appBarTheme: AppBarTheme(
           color: const Color(0xff3c3f41)

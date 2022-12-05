@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   final reduceSecondsBy = 1;
   double percent = 0;
   int timeInSec = timeInMin * 60;
-  String startOrPause = "Start Timer";
+  String startOrPause = "Start";
   int timesPressed = 0;
   bool timerAlmostDone = false, twentyMinTimerDone = false, twentySecTimerDone = false;
   StreamController<int> streamEvents = StreamController<int>();
@@ -43,13 +43,13 @@ class _HomePageState extends State<HomePage> {
 
   void start20MinTimer() {
     twentyMinTimerDone = false;
-    setState(() => startOrPause = "Pause Timer");
+    setState(() => startOrPause = "Pause");
     twentyMinTimer = Timer.periodic(Duration(seconds: 1), (_) => setCountdown());
   }
 
   void pause20MinTimer() {
     setState(() {
-      startOrPause = "Start Timer";
+      startOrPause = "Start";
       twentyMinTimer!.cancel();
     });
   }
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           reset20MinTimer();
           readyMessage();
-          startOrPause = "Start Timer";
+          startOrPause = "Start";
           duration = Duration(minutes: timeInMin);
         });
       }
@@ -389,7 +389,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                      margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                       child: Row(
                         children: [
                           Expanded(
@@ -401,6 +401,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                     '$startOrPause',
                                     style: TextStyle(
+                                      fontSize: 18,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -426,8 +427,9 @@ class _HomePageState extends State<HomePage> {
                                 child: const Padding(
                                   padding: EdgeInsets.all(20.0),
                                   child: Text(
-                                    'Reset Timer',
+                                    'Reset',
                                     style: TextStyle(
+                                      fontSize: 18,
                                       color: Colors.white,
                                     ),
                                   ),

@@ -248,13 +248,13 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "cs4080_capstone_project",
+      "name": "twenty_20_20_rule",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-12-04T23:56:14.809042Z",
+  "generated": "2022-12-05T12:54:34.779394Z",
   "generator": "pub",
   "generatorVersion": "2.16.1"
 }

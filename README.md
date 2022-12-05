@@ -1,4 +1,4 @@
-# cs4080_capstone_project
+# twenty_20_20_rule
 
 A new Flutter project.
 

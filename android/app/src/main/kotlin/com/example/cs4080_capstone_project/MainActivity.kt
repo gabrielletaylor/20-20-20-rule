@@ -1,4 +1,4 @@
-package com.example.cs4080_capstone_project
+package com.example.twenty_20_20_rule
 
 import io.flutter.embedding.android.FlutterActivity
 
