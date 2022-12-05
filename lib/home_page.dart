@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void start20SecTimer() {
-    int _counter = 21;
+    int _counter = 20;
     streamEvents = StreamController<int>();
     streamEvents.add(20);
     if (twentySecTimer != null) {
@@ -126,22 +126,44 @@ class _HomePageState extends State<HomePage> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('20 minutes are up!'),
+          title: const Text(
+            "\"20 minutes are up!\"",
+            style: TextStyle(
+              fontSize: 27,
+              color: Color(0xff6a8759)
+            ),
+          ),
+          backgroundColor: Color(0xff313335),
           content: SingleChildScrollView(
-                  child: ListBody(
-                    children: [
-                      Text('Time to rest for 20 seconds.'),
-                    ],
+              child: ListBody(
+                children: [
+                  Text(
+                    '\nTime to rest for 20 seconds.',
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xff9876aa)
+                    ),
+                  ),
+                ],
               ),
             ),
           actions: <Widget>[
-            TextButton(
-              child: const Text('Ready'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                start20SecTimer();
-                popUpMessage();
-              },
+            Container(
+              margin: EdgeInsets.only(right: 10),
+              child: TextButton(
+                child: const Text(
+                  'Ready',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xffffc66d)
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  start20SecTimer();
+                  popUpMessage();
+                },
+              ),
             ),
           ],
         );
@@ -155,27 +177,61 @@ class _HomePageState extends State<HomePage> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Look at something 20 feet away for 20 seconds.'),
+          title: const Text(
+            'Look at something 20 feet away for 20 seconds.',
+            style: TextStyle(
+              fontSize: 25,
+              color: Color(0xff6a8759)
+            ),
+          ),
+          backgroundColor: Color(0xff313335),
           content: StreamBuilder<int>(
             stream: streamEvents.stream,
             builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
               return SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    Text('\nTime remaining: ${snapshot.data.toString()}'),
+                    Row(
+                      children: [
+                        Text(
+                          '\nTime remaining: ',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xff9876aa)
+                          ),
+                        ),
+                        Text(
+                          '\n${snapshot.data.toString()}',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xff6897bb)
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 )
               );
             },
           ),
           actions: <Widget>[
-            TextButton(
-              child: const Text('Done'),
-              onPressed: () {
-                if (twentySecTimerDone) {
-                  Navigator.of(context).pop();
-                }
-              },
+            Container(
+              margin: EdgeInsets.only(right: 10),
+              child: TextButton(
+                child: const Text(
+                  'Done',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xffffc66d)
+                  ),
+                ),
+                onPressed: () {
+                  if (twentySecTimerDone) {
+                    twentySecTimerDone = false;
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
             ),
           ],
         );
@@ -192,8 +248,205 @@ class _HomePageState extends State<HomePage> {
       minutes = "01";
     }
 
+    /*
+    * green 0xff6a8759 - strings
+    * purple 0xff9876aa - variables
+    * orange 0xffcc7832 - keywords
+    * yellow 0xffffc66d - widgets/method names
+    * blue 0xff6897bb - values (int, double)
+    * white over dark 0xffa9b7c6
+    * white over light 0xffbbbbbb
+    * med gray 0xff313335 - line number area
+    * red 0xffbd3f3c - error squiggle
+    * */
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "20-20-20 Rule",
+          style: TextStyle(
+            color: Color(0xffbbbbbb)
+          ),
+        ),
+      ),
+      backgroundColor: Color(0xff2b2b2b),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 55,
+              child: CircularPercentIndicator(
+                circularStrokeCap: CircularStrokeCap.round,
+                percent: percent,
+                animation: true,
+                animateFromLastPercent: true,
+                radius: 150.0,
+                lineWidth: 15.0,
+                backgroundColor: Color(0xffa9b7c6),
+                progressColor: Color(0xffbd3f3c),
+                center: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$minutes:$seconds',
+                      style: const TextStyle(
+                        color: Color(0xffa9b7c6),
+                        fontSize: 50,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 35,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xff3c3f41),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(24.0),
+                    topLeft: Radius.circular(24.0),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 30, left: 25, right: 25),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: const [
+                                Text(
+                                  "\"Activity Time\"",
+                                  style: TextStyle(
+                                      fontSize: 19.0,
+                                      color: Color(0xff6a8759)
+                                  ),
+                                ),
+                                // SizedBox(
+                                //   height: 10.0,
+                                // ),
+                                Text(
+                                  "20",
+                                  style: TextStyle(
+                                      fontSize: 60.0,
+                                      color: Color(0xff6897bb)
+                                  ),
+                                ),
+                                Text(
+                                  "minutes",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Color(0xffcc7832)
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: const [
+                                Text(
+                                  "\"Rest Time\"",
+                                  style: TextStyle(
+                                      fontSize: 19.0,
+                                      color: Color(0xff6a8759)
+                                  ),
+                                ),
+                                Text(
+                                  "20",
+                                  style: TextStyle(
+                                      fontSize: 60.0,
+                                      color: Color(0xff6897bb)
+                                  ),
+                                ),
+                                Text(
+                                  "seconds",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Color(0xffcc7832)
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 23, left: 20, right: 20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 7),
+                              child: ElevatedButton(
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Text(
+                                    '$startOrPause',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  timesPressed++;
+                                  getTimerOption();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 4,
+                                  primary: Color(0xffffc66d),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 7),
+                              child: ElevatedButton(
+                                child: const Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Text(
+                                    'Reset Timer',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  reset20MinTimer();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 4,
+                                  primary: Color(0xffffc66d),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ]
+        ),
+      ),
+    );
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text("20-20-20 Rule"),
+        ),
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -217,7 +470,6 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 36,
-                      fontFamily: 'RobotoMono'
                   ),
                 ),
               ),
